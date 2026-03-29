@@ -48,14 +48,14 @@ jobs:
           build-args: |
             TAG=${{ env.image_tag }}
             COMMIT=${{ github.sha }}
-            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            BUILD_DATE=${{ github.run_started_at }}
             OPENCLAW_INSTALL_BROWSER=1
           cache-from: type=registry,ref=${{ secrets.dockerhub_username }}/${{ env.docker_image_name }}:buildcache
           cache-to: type=registry,ref=${{ secrets.dockerhub_username }}/${{ env.docker_image_name }}:buildcache,mode=max
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
-            org.opencontainers.image.created=${{ github.event.head_commit.timestamp }}
+            org.opencontainers.image.created=${{ github.run_started_at }}
 
       - name: "Verify pushed image"
         run: |
