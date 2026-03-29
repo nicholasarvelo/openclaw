@@ -43,15 +43,15 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: >
-            ${{ secrets.dockerhub_username }}/${{ env.docker_image_name }}:latest,
-            ${{ secrets.dockerhub_username }}/${{ env.docker_image_name }}:${{ env.image_tag }}
+            ${{ vars.dockerhub_username }}/${{ env.docker_image_name }}:latest,
+            ${{ vars.dockerhub_username }}/${{ env.docker_image_name }}:${{ env.image_tag }}
           build-args: |
             TAG=${{ env.image_tag }}
             COMMIT=${{ github.sha }}
             BUILD_DATE=${{ github.run_started_at }}
             OPENCLAW_INSTALL_BROWSER=1
-          cache-from: type=registry,ref=${{ secrets.dockerhub_username }}/${{ env.docker_image_name }}:buildcache
-          cache-to: type=registry,ref=${{ secrets.dockerhub_username }}/${{ env.docker_image_name }}:buildcache,mode=max
+          cache-from: type=registry,ref=${{ vars.dockerhub_username }}/${{ env.docker_image_name }}:buildcache
+          cache-to: type=registry,ref=${{ vars.dockerhub_username }}/${{ env.docker_image_name }}:buildcache,mode=max
           labels: |
             org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
             org.opencontainers.image.revision=${{ github.sha }}
@@ -63,13 +63,13 @@ jobs:
           sleep 10
       
           # Verify tags exist
-          docker manifest inspect ${{ secrets.dockerhub_username }}/${{ env.docker_image_name }}:latest
-          docker manifest inspect ${{ secrets.dockerhub_username }}/${{ env.docker_image_name }}:${{ env.image_tag }}
+          docker manifest inspect ${{ vars.dockerhub_username }}/${{ env.docker_image_name }}:latest
+          docker manifest inspect ${{ vars.dockerhub_username }}/${{ env.docker_image_name }}:${{ env.image_tag }}
       
           # Verify both architectures
-          docker manifest inspect ${{ secrets.dockerhub_username }}/${{ env.docker_image_name }}:latest | \
+          docker manifest inspect ${{ vars.dockerhub_username }}/${{ env.docker_image_name }}:latest | \
             jq -e '.manifests | length == 2'
       
           # Smoke test: pull and verify entrypoint exists
-          docker pull --platform linux/amd64 ${{ secrets.dockerhub_username }}/${{ env.docker_image_name }}:latest
-          docker run --rm ${{ secrets.dockerhub_username }}/${{ env.docker_image_name }}:latest --version
+          docker pull --platform linux/amd64 ${{ vars.dockerhub_username }}/${{ env.docker_image_name }}:latest
+          docker run --rm ${{ vars.dockerhub_username }}/${{ env.docker_image_name }}:latest --version
